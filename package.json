@@ -1,0 +1,27 @@
+{
+  "name": "phonebook-backend",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tigger112/FullStackOpen-part3.git"
+  },
+  "author": "Tigger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tigger112/FullStackOpen-part3/issues"
+  },
+  "homepage": "https://github.com/Tigger112/FullStackOpen-part3#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
