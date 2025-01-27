@@ -58,14 +58,14 @@ app.put("/api/persons/:id", (request, response, next) => {
   const { name, number } = request.body;
 
   Person.findByIdAndUpdate(
-    request.params.id, 
-    { name, number }, 
-    { new: true, runValidators: true, context: "query"}
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
   )
-  .then((updatedPerson) => {
+    .then((updatedPerson) => {
       response.json(updatedPerson);
-  })
-  .catch((error) => next(error));
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (request, response, next) => {
@@ -74,13 +74,14 @@ app.post("/api/persons", (request, response, next) => {
     return next({ name: "name or number is missing" });
   }
 
-  const person = new Person({ name, number});
+  const person = new Person({ name, number });
 
-  person.save()
-  .then((savedPerson) => {
-    response.json(savedPerson);
-  })
-  .catch(error => next(error));
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 const unknownEndpoint = (request, response) => {
@@ -98,7 +99,7 @@ const errorHandler = (error, request, response, next) => {
     case "name or number is missing":
       return response.status(400).send({ error: error.name });
     case "ValidationError":
-      return response.status(400).json({error: error.message})
+      return response.status(400).json({ error: error.message });
   }
 
   next(error);
