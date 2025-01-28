@@ -1,113 +1,113 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-require("dotenv").config();
-const Person = require("./models/person");
-const app = express();
-app.use(express.json());
-app.use(cors());
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+require('dotenv').config()
+const Person = require('./models/person')
+const app = express()
+app.use(express.json())
+app.use(cors())
 
-morgan.token("json", (request, response) => {
-  const body = request.body;
-  if (request.method === "POST") {
-    return JSON.stringify(body);
+morgan.token('json', (request) => {
+  const body = request.body
+  if (request.method === 'POST') {
+    return JSON.stringify(body)
   }
-  return " ";
-});
+  return ' '
+})
 
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :json")
-);
-app.use(express.static("dist"));
+  morgan(':method :url :status :res[content-length] - :response-time ms :json')
+)
+app.use(express.static('dist'))
 
-app.get("/info", (request, response) => {
+app.get('/info', (request, response) => {
   Person.find({}).then((result) => {
     const message = `
       <p>Phonebook has info for ${result.length} people</p>
       <p>${Date()}</p>
-      `;
-    response.send(message);
-  });
-});
+      `
+    response.send(message)
+  })
+})
 
-app.get("/api/persons", (request, response) => {
+app.get('/api/persons', (request, response) => {
   Person.find({}).then((result) => {
-    response.json(result);
-  });
-});
+    response.json(result)
+  })
+})
 
-app.get("/api/persons/:id", (request, response, next) => {
-  const id = request.params.id;
+app.get('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
   Person.findById(id)
     .then((person) => {
-      response.json(person);
+      response.json(person)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
-app.delete("/api/persons/:id", (request, response, next) => {
-  const id = request.params.id;
+app.delete('/api/persons/:id', (request, response, next) => {
+  const id = request.params.id
   Person.findByIdAndDelete(id)
-    .then((result) => {
-      response.status(204).end();
+    .then(() => {
+      response.status(204).end()
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
-app.put("/api/persons/:id", (request, response, next) => {
-  const { name, number } = request.body;
+app.put('/api/persons/:id', (request, response, next) => {
+  const { name, number } = request.body
 
   Person.findByIdAndUpdate(
     request.params.id,
     { name, number },
-    { new: true, runValidators: true, context: "query" }
+    { new: true, runValidators: true, context: 'query' }
   )
     .then((updatedPerson) => {
-      response.json(updatedPerson);
+      response.json(updatedPerson)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
-app.post("/api/persons", (request, response, next) => {
-  const { name, number } = request.body;
+app.post('/api/persons', (request, response, next) => {
+  const { name, number } = request.body
   if (!name || !number) {
-    return next({ name: "name or number is missing" });
+    return next({ name: 'name or number is missing' })
   }
 
-  const person = new Person({ name, number });
+  const person = new Person({ name, number })
 
   person
     .save()
     .then((savedPerson) => {
-      response.json(savedPerson);
+      response.json(savedPerson)
     })
-    .catch((error) => next(error));
-});
+    .catch((error) => next(error))
+})
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
-};
+  response.status(404).send({ error: 'unknown endpoint' })
+}
 
-app.use(unknownEndpoint);
+app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
-  console.log(error.name);
+  console.log(error.name)
 
   switch (error.name) {
-    case "CastError":
-      return response.status(400).send({ error: "malfromatted id" });
-    case "name or number is missing":
-      return response.status(400).send({ error: error.name });
-    case "ValidationError":
-      return response.status(400).json({ error: error.message });
+  case 'CastError':
+    return response.status(400).send({ error: 'malfromatted id' })
+  case 'name or number is missing':
+    return response.status(400).send({ error: error.name })
+  case 'ValidationError':
+    return response.status(400).json({ error: error.message })
   }
 
-  next(error);
-};
+  next(error)
+}
 
-app.use(errorHandler);
+app.use(errorHandler)
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT
 app.listen(PORT, () => {
-  console.log("start");
-});
+  console.log('start')
+})
